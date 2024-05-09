@@ -20,3 +20,6 @@
 
 
 int new_server(int domain, int type, int protocol);
+
+
+struct sockaddr_in build_sockaddr_in(char* address, short port);
