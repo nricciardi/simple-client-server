@@ -2,6 +2,8 @@
 
 Semplici client e server scritti in Python e C per sopravvivere all'esame di reti.
 
+**Non rubare, contribuisci.**
+
 Autore: **Nicola Ricciardi**
 
 
