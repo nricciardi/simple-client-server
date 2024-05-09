@@ -20,7 +20,7 @@
 
 
 
-struct sockaddr_in build_sockaddr_in(char* address, short port);
+struct sockaddr_in build_ipv4_sockaddr(char* address, short port);
 
 int new_server(int domain, int type, int protocol);
 
