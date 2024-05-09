@@ -3,6 +3,8 @@ project(c_client_server C)
 
 set(CMAKE_C_STANDARD 23)
 
-add_executable(c_client_server main.c
-        server.h
-        server.c)
+add_executable(c_client_server server_main.c
+        server.c
+        client.h
+        client.c
+        client_main.c)
