@@ -13,13 +13,15 @@
 #include <unistd.h> // read(), write(), close()
 
 
-#ifndef CLIENT_SERVER_H
-#define CLIENT_SERVER_H
+#ifndef SERVER_H
+#define SERVER_H
 
-#endif //CLIENT_SERVER_H
+#endif
 
-
-int new_server(int domain, int type, int protocol);
 
 
 struct sockaddr_in build_sockaddr_in(char* address, short port);
+
+int new_server(int domain, int type, int protocol);
+
+int new_tcp_ipv4_server(char* address, short port);

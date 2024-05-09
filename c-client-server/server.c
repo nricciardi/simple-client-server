@@ -5,13 +5,13 @@
 #include "server.h"
 
 struct sockaddr_in build_sockaddr_in(char* address, short port) {
-    struct sockaddr_in address;
+    struct sockaddr_in addr_in;
 
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(port);
+    addr_in.sin_family = AF_INET;
+    addr_in.sin_addr.s_addr = INADDR_ANY;
+    addr_in.sin_port = htons(port);
 
-    return address;
+    return addr_in;
 }
 
 int new_server(int domain, int type, int protocol, struct sockaddr* server_address, socklen_t address_length) {
@@ -35,3 +35,5 @@ int new_server(int domain, int type, int protocol, struct sockaddr* server_addre
 
     return socketd;
 }
+
+int new_tcp_ipv4_server(char* address, short port)
