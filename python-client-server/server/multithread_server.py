@@ -32,5 +32,6 @@ class MultithreadServer(Server):
 
                 print(f"accepted new connection from {address}")
 
-                tpe.submit(self.handler, communication_socket, address)
+                result = tpe.submit(self.handler, communication_socket, address)
 
+                result.result()

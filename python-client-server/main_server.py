@@ -13,6 +13,8 @@ def server_handler(communication_socket: socket.socket, address: str):
 
     communication_socket.send(data)
 
+    raise Exception("errore")
+
 
 if __name__ == '__main__':
     sts = MultithreadServer('127.0.0.1', 12345, handler=server_handler)
