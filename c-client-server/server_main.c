@@ -29,6 +29,8 @@ void on_ipv4_server_start(int communication_socketd, struct sockaddr_in client_a
     } while(read_res > 0);
 }
 
+
+// int argc, char *argv[]
 int main(void) {
 
     int socketd = new_tcp_ipv4_server("127.0.0.1", 12345);

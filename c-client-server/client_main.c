@@ -5,6 +5,7 @@
 
 #include "client.h"
 
+// int argc, char *argv[]
 int main(void) {
 
     struct sockaddr_in server_address;

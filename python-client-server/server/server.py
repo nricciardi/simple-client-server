@@ -13,6 +13,10 @@ class Server(ABC):
         self.port = port
 
         self.socket = socket.socket(family, type, **other_socket_options)
+
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+
         self.running = False
 
         print(f"server socket created")
