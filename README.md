@@ -6,6 +6,11 @@ Semplici client e server scritti in Python e C per sopravvivere all'esame di ret
 
 Autore: **Nicola Ricciardi**
 
+TODO:
+
+- Multi-process in Python
+- Esempio client-server con doppia risposta 
+
 ## C
 
 ### Client
