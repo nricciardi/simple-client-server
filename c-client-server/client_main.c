@@ -3,22 +3,40 @@
 //
 
 
+#include "common.h"
+#include "cli.h"
 #include "client.h"
 
-// int argc, char *argv[]
-int main(void) {
+
+void start_client(int communication_socketd) {
+
+    char *request = str_concatenation(3, "Value:", "prova", "\n");
+    int request_len = strlen(request);
+
+    write_n_bytes(communication_socketd, request, request_len);
+
+    int response_len;
+    char* response = read_until_terminator_found(communication_socketd, "\n", 0, &response_len);
+    response = zero_term(response, response_len);
+    response_len += 1;
+
+    printf("response: %s", response);
+}
+
+
+int main(int argc, char *argv[]) {
+
+    require_n_params_or_fail(1, argc);
+
+    short port = parse_to_long_or_fail(argv[1]);
 
     struct sockaddr_in server_address;
 
-    server_address.sin_family = AF_INET;
-    server_address.sin_port = htons(12345);
+    server_address = build_ipv4_sockaddr("127.0.0.1", port);       // automatic htons
 
-    inet_aton("127.0.0.1", &server_address.sin_addr);
+    int communication_socketd = connect_to_tcp_ipv4_server(&server_address);
 
-    int socketd = connect_to_tcp_ipv4_server(&server_address);
-
-    char* hello = "hello";
-    send(socketd, hello, sizeof(hello), 0);
+    start_client(communication_socketd);
 
     return 0;
 }

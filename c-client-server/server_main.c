@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
 
     short port = parse_to_long_or_fail(argv[1]);
 
-    int socketd = new_tcp_ipv4_server("127.0.0.1", port);
+    int socketd = new_tcp_ipv4_server("127.0.0.1", port);       // automatic htons
 
     start_singlethread_server(socketd, 6);
     // start_multiprocess_server(socketd, 6);

@@ -2,6 +2,7 @@
 // Created by Nicola Ricciardi.
 //
 
+#include "common.h"
 
 #include <stdio.h>
 #include <netdb.h>
@@ -21,9 +22,6 @@
 
 
 
-struct sockaddr_in build_ipv4_sockaddr(const char* address_or_name, short port);
-
-struct sockaddr_in build_ipv4_any_sockaddr(short port);
 
 int new_server(int domain, int type, int protocol, const struct sockaddr* server_address, socklen_t address_length);
 

@@ -8,6 +8,8 @@
 #endif //COMMON_H
 
 
+#include <arpa/inet.h>
+
 #define _POSIX_C_SOURCE 200112L
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,6 +22,11 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <stdarg.h>
+
+
+struct sockaddr_in build_ipv4_sockaddr(const char* address_or_name, short port);
+
+struct sockaddr_in build_ipv4_any_sockaddr(short port);
 
 long int parse_to_long_or_fail(const char* maybe_number);
 

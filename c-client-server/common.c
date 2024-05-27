@@ -5,6 +5,52 @@
 #include "common.h"
 
 
+/**
+ *
+ * Build an IPv4 address using address or name and port passed
+ *
+ * @param address_or_name
+ * @param port
+ * @return address struct
+ */
+struct sockaddr_in build_ipv4_sockaddr(const char* address_or_name, short port) {
+
+    struct hostent *server = gethostbyname(address_or_name);
+
+    if (server == NULL) {
+        printf("ERROR: no such host '%s'\n", address_or_name);
+    }
+
+    struct sockaddr_in addr_in;
+
+    addr_in.sin_family = AF_INET;
+
+    bcopy((char *) server->h_addr, (char *) &addr_in.sin_addr, server->h_length);
+    addr_in.sin_port = htons(port);
+
+    return addr_in;
+}
+
+
+/**
+ * Build address for any interfaces setting port
+ *
+ *
+ * @param port
+ * @return address struct
+ */
+struct sockaddr_in build_ipv4_any_sockaddr(short port) {
+
+    struct sockaddr_in addr_in;
+
+    addr_in.sin_family = AF_INET;
+
+    addr_in.sin_addr.s_addr = INADDR_ANY;
+    addr_in.sin_port = htons(port);
+
+    return addr_in;
+}
+
 
 /**
  * Parse parameter to long.
