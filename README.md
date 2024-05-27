@@ -9,7 +9,7 @@ Autore: **Nicola Ricciardi**
 TODO:
 
 - Multi-process in Python
-- Esempio client-server con doppia risposta 
+- Esempio client-server con doppia risposta (fatto solo server C)
 
 ## C
 
@@ -133,3 +133,8 @@ if __name__ == '__main__':
 
     mts.start()
 ```
+
+# Contributori
+
+- Nicola Ricciardi
+- Filippo Garagnani
