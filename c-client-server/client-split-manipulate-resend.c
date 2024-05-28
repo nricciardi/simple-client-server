@@ -4,19 +4,22 @@
 
 
 #include "common.h"
-#include "cli.h"
 #include "client.h"
 
 
 void start_client(int communication_socketd) {
 
-    char *request = str_concatenation(3, "Value:", "prova", "\n");
+    char hostname[255];
+
+    gethostname(hostname, 255);
+
+    char *request = str_concatenation(3, "Value:", hostname, "\n");
     int request_len = strlen(request);
 
     write_n_bytes(communication_socketd, request, request_len);
 
     int response_len;
-    char* response = read_until_terminator_found(communication_socketd, "\n", 0, &response_len);
+    char* response = read_until_terminator_found(communication_socketd, "\n", 1, 0, &response_len);
     response = zero_term(response, response_len);
     response_len += 1;
 

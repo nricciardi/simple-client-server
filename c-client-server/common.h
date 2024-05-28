@@ -32,7 +32,7 @@ long int parse_to_long_or_fail(const char* maybe_number);
 
 char* str_concatenation(int n_strings, ...);
 
-char* read_until_terminator_found(const int descriptor, const char* terminator, const int include_terminator, int* byte_read);
+char* read_until_terminator_found(const int descriptor, const char* terminator, int terminator_len,  const int include_terminator, int* byte_read);
 
 void write_n_bytes(const int descriptor, const char* bytes, const int n_bytes);
 
@@ -44,5 +44,5 @@ char* str_to_lower(const char* source);
 
 char* zero_term(const char* array, int len);
 
-
+void require_n_params_or_fail(int n, int argc);
 

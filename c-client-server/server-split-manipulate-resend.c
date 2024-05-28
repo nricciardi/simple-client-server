@@ -1,14 +1,13 @@
 #include <stdio.h>
 
 #include "common.h"
-#include "cli.h"
 #include "server.h"
 
 
 void on_ipv4_server_start(int communication_socketd, struct sockaddr_in client_address) {
 
     int byte_read;
-    char* result = read_until_terminator_found(communication_socketd, "\n", 0, &byte_read); // no zero-term
+    char* result = read_until_terminator_found(communication_socketd, "\n", 1, 0, &byte_read); // no zero-term
     result = zero_term(result, byte_read);
 
     char* content = get_nth_str(result, ":", 1);

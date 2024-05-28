@@ -111,9 +111,9 @@ char* str_concatenation(int n_strings, ...) {
  * @param byte_read
  * @return
  */
-char* read_until_terminator_found(const int descriptor, const char* terminator, const int include_terminator, int* byte_read) {
+char* read_until_terminator_found(const int descriptor, const char* terminator, int terminator_len, const int include_terminator, int* byte_read) {
 
-    int buffer_len = strlen(terminator);
+    int buffer_len = terminator_len;
     char* buffer = calloc(buffer_len, sizeof(char));
 
     int result_len = 0;
@@ -266,7 +266,24 @@ char* zero_term(const char* array, int len) {
     return result;
 }
 
+/**
+ * Validate number of parameters. It must be exactly n.
+ *
+ * @param n number of params required
+ * @param argc actual parameters number
+ */
+void require_n_params_or_fail(const int n, const int argc) {
 
+    if(argc - 1 < n) {
+        printf("ERROR: too few params\n");
+        exit(1);
+    }
+
+    if(argc - 1 > n) {
+        printf("ERROR: too many params\n");
+        exit(1);
+    }
+}
 
 
 
