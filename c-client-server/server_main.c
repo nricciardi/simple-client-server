@@ -20,7 +20,7 @@ void on_ipv4_server_start(int communication_socketd, struct sockaddr_in client_a
 
     content = str_to_upper(content);
 
-    char* packet = str_concatenation(2, "Value:", content);
+    char* packet = str_concatenation(3, "Value:", content, "\n");
 
     write_n_bytes(communication_socketd, packet, strlen(packet));
 }

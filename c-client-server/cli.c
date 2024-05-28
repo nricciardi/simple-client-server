@@ -14,12 +14,12 @@
 void require_n_params_or_fail(const int n, const int argc) {
 
     if(argc - 1 < n) {
-        printf("ERROR: Too few params\n");
+        printf("ERROR: too few params\n");
         exit(1);
     }
 
     if(argc - 1 > n) {
-        printf("ERROR: Too many params\n");
+        printf("ERROR: too many params\n");
         exit(1);
     }
 }

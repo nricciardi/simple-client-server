@@ -19,17 +19,17 @@ class Server(ABC):
 
         self.running = False
 
-        print(f"server socket created")
+        print(f"INFO: server socket created")
 
     def start(self, client_queue_size: int = DEFAULT_CLIENT_QUEUE_SIZE):
         self.socket.bind((self.address, int(self.port)))
 
         self.socket.listen(client_queue_size)
 
-        print(f"server socket bound and listening on {self.address}:{self.port}")
+        print(f"INFO: server socket bound and listening on {self.address}:{self.port}")
 
         self.running = True
-        print("server start")
+        print("INFO: server start")
 
         self.on_start()
 
@@ -38,7 +38,7 @@ class Server(ABC):
 
     def stop(self):
         self.running = False
-        print("server stop")
+        print("INFO: server stop")
 
         self.on_stop()
 

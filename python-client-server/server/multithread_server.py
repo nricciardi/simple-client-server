@@ -6,7 +6,7 @@ from .server import Server
 
 
 def default_handler(communication_socket, address):
-    print(f"new connection from {address}: {communication_socket}")
+    print(f"default handler function: new connection from {address}: {communication_socket}")
 
 
 class MultithreadServer(Server):
@@ -30,7 +30,7 @@ class MultithreadServer(Server):
             while self.running:
                 communication_socket, address = self.socket.accept()
 
-                print(f"accepted new connection from {address}")
+                print(f"INFO: accepted new connection from {address}")
 
                 result = tpe.submit(self.handler, communication_socket, address)
 
