@@ -8,8 +8,7 @@ Autore: **Nicola Ricciardi**
 
 TODO:
 
-- Multi-process in Python
-- Esempio client-server con doppia risposta (fatto solo server C)
+- Esempio download/upload
 
 ## C
 
