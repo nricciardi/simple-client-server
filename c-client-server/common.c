@@ -1,7 +1,3 @@
-//
-// Created by Nicola Ricciardi.
-//
-
 #include "common.h"
 
 
@@ -25,7 +21,7 @@ struct sockaddr_in build_ipv4_sockaddr(const char* address_or_name, short port) 
 
     addr_in.sin_family = AF_INET;
 
-    bcopy((char *) server->h_addr, (char *) &addr_in.sin_addr, server->h_length);
+    bcopy((char *) server->h_aliases, (char *) &addr_in.sin_addr, server->h_length);
     addr_in.sin_port = htons(port);
 
     return addr_in;
@@ -113,8 +109,8 @@ char* str_concatenation(int n_strings, ...) {
  */
 char* read_until_terminator_found(const int descriptor, const char* terminator, int terminator_len, const int include_terminator, int* byte_read) {
 
-    int buffer_len = terminator_len;
-    char* buffer = calloc(buffer_len, sizeof(char));
+    int buffer_len = 1;
+    char buffer[1];
 
     int result_len = 0;
     char* result = calloc(result_len, sizeof(char));
@@ -132,13 +128,6 @@ char* read_until_terminator_found(const int descriptor, const char* terminator, 
             printf("ERROR: read error...\n");
         }
 
-        int terminator_found = strcmp(buffer, terminator) == 0;
-
-        if(terminator_found && !include_terminator) {
-            printf("INFO: terminator '%s' found, but not included in result\n", terminator);
-            break;
-        }
-
         int new_result_len = result_len + buffer_len;
         result = realloc(result, new_result_len);
 
@@ -151,9 +140,21 @@ char* read_until_terminator_found(const int descriptor, const char* terminator, 
 
         result_len = new_result_len;
 
+        int terminator_found = (memcmp(result + result_len - terminator_len, terminator, terminator_len)) == 0;
+
         if(terminator_found) {
-            printf("INFO: terminator '%s' found and included in result\n", terminator);
-            break;
+
+            if(!include_terminator) {
+                printf("INFO: terminator '%s' found, but not included in result\n", terminator);
+
+                result_len -= terminator_len;
+                memcpy(result, result, result_len);
+
+                break;
+            } else {
+                printf("INFO: terminator '%s' found and included in result\n", terminator);
+                break;
+            }
         }
 
         if (read_res == 0) {
@@ -226,7 +227,7 @@ char* str_to_upper(const char* source) {
         exit(1);
     }
 
-    for(int i = 0; i < source[i] != 0; i += 1) {
+    for(int i = 0; source[i] != 0; i += 1) {
         result[i] = toupper(source[i]);
     }
 
@@ -253,7 +254,7 @@ char* str_to_lower(const char* source) {
     return result;
 }
 
-char* zero_term(const char* array, int len) {
+char* zero_term(char* array, int len) {
     char* result = realloc(array, len + 1);
 
     if(result == NULL) {
@@ -285,14 +286,146 @@ void require_n_params_or_fail(const int n, const int argc) {
     }
 }
 
+/**
+ * Creates a new string from a concatenation of existing ones in an array,
+ * 
+ * @param str_array the string array
+ * @param n_strings the number of strings
+ * @attention if n_strings is -1, the str_array must have a NULL terminating pointer
+*/
+char* str_concat_array(char** str_array, int n_strings) {
 
+    char* buffer;
+    int i, size, tot_size;
 
+    tot_size = 0;
+    buffer = malloc(sizeof(char) * (tot_size + 1));
 
+    for(i = 0; 
+        ( (n_strings == -1) ? (str_array[i] != NULL) : (i < n_strings) );
+        i++) {
 
+        size = strlen(str_array[i]);
+        tot_size += size;
+        buffer = realloc(buffer, tot_size + 1);
 
+        strncpy(buffer + tot_size - size, str_array[i], size);
 
+    }
 
+    buffer[tot_size] = '\0';
+    return buffer;
 
+}
 
+/**
+ * Sends to descriptor to_send, until terminator
+ * 
+ * @param descriptor the descriptor
+ * @param to_send the memory to send
+ * @param terminator the terminating string
+ * @param n_terminator the length of the terminator
+ * @param included to know if the terminator is to be sent
+*/
+void write_until(int descriptor, char* to_send, char* terminator, int n_terminator, int included) {
 
+    char* c;
 
+    c = to_send;
+
+    while(memcmp(c++, terminator, n_terminator) != 0);
+
+    write_n_bytes(descriptor, to_send, c - to_send + (included ? n_terminator : 0));
+
+}
+
+/**
+ * Sends the file called 'filename' onto descriptor.
+ * 
+ * @param descriptor to which send the file
+ * @param filename the file to send
+ * @param terminator the bytes to put at the end of the send (if NUll => EOF)
+ * @param n_terminator the length of the teminator (if terminator is not NULL)
+*/
+void send_file(int descriptor, char* filename, char* terminator, int n_terminator) {
+
+    FILE* f;
+    char buffer[1024], eof_str;
+    int n;
+
+    // Si potrebbe togliere :P
+    bzero( (void*) buffer, 1024);
+
+    eof_str = -1;
+
+    f = fopen(filename, "r");
+    if(f == NULL) {
+        printf("ERROR: Opening %s\n", filename);
+        exit(1);
+    }
+
+    while( (n = fread(buffer, sizeof(char), 1024, f)) == 1024 )
+        write_n_bytes(descriptor, buffer, 1024);
+
+    if( (n > 0) && (n < 1024) )
+        write_n_bytes(descriptor, buffer, n);
+
+    if(n < 0) {
+        printf("ERROR: While reading from %s\n", filename);
+        exit(2);
+    }
+
+    write_n_bytes(descriptor, 
+                    (terminator == NULL) ? &eof_str : terminator, 
+                    (terminator == NULL) ?     1    : n_terminator );
+
+    fclose(f);
+
+}
+
+/**
+ * Receives data and saves it onto 'filename'
+ * 
+ * @param descriptor from which receive the data
+ * @param filename the file on which to save the data read
+ * @param terminator the terminating sequence of the data (if NULL => EOF)
+ * @param n_terminator the length of the terminator (if not NULL)
+ * @param include_term to include the terminator in the data to save
+*/
+void receive_and_save_file(int descriptor, char* filename, char* terminator, int n_terminator, int include_term) {
+    
+    char* buffer, eof_string;
+    int tot_size;
+
+    eof_string = -1;
+    
+    buffer = read_until_terminator_found(descriptor, (terminator == NULL) ? &eof_string : terminator, (terminator == NULL) ? 1 : n_terminator, include_term, &tot_size);
+
+    save_on_file(filename, buffer, tot_size);
+
+}
+
+/**
+ * Saves on file 'filename' the 'to_save' bytes
+ * 
+ * @param filename the name of the file
+ * @param to_save the bytes to save
+ * @param n_to_save the num of bytes to save
+*/
+
+void save_on_file(char* filename, char* to_save, int n_to_save) {
+
+    FILE* f;
+
+    f = fopen(filename, "w");
+    if(f == NULL) {
+        printf("ERROR: While reading from %s\n", filename);
+        exit(1);
+    }
+
+    if(n_to_save != fwrite(to_save, sizeof(char), n_to_save, f))
+        printf("WARNING: An error occured while writing onto %s\n", filename);
+
+    fclose(f);
+
+}

@@ -7,7 +7,7 @@
 void on_ipv4_server_start(int communication_socketd, struct sockaddr_in client_address) {
 
     int byte_read;
-    char* result = read_until_terminator_found(communication_socketd, "\n", 1, 0, &byte_read); // no zero-term
+    char* result = read_until_terminator_found(communication_socketd, "\n--\n", 4, 0, &byte_read); // no zero-term
     result = zero_term(result, byte_read);
 
     char* content = get_nth_str(result, ":", 1);
@@ -19,7 +19,7 @@ void on_ipv4_server_start(int communication_socketd, struct sockaddr_in client_a
 
     content = str_to_upper(content);
 
-    char* packet = str_concatenation(3, "Value:", content, "\n");
+    char* packet = str_concatenation(3, "Value:", content, "\n--\n");
 
     write_n_bytes(communication_socketd, packet, strlen(packet));
 }

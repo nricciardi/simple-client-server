@@ -1,7 +1,3 @@
-//
-// Created by Nicola Ricciardi.
-//
-
 #ifndef COMMON_H
 #define COMMON_H
 
@@ -10,7 +6,6 @@
 
 #include <arpa/inet.h>
 
-#define _POSIX_C_SOURCE 200112L
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -42,7 +37,16 @@ char* str_to_upper(const char* source);
 
 char* str_to_lower(const char* source);
 
-char* zero_term(const char* array, int len);
+char* zero_term(char* array, int len);
 
 void require_n_params_or_fail(int n, int argc);
 
+char* str_concat_array(char** str_array, int n_strings);
+
+void write_until(int sockfd, char* to_send, char* terminator, int n_terminator, int included);
+
+void send_file(int descriptor, char* filename, char* terminator, int n_terminator);
+
+void receive_and_save_file(int descriptor, char* filename, char* terminator, int n_terminator, int include_term);
+
+void save_on_file(char* filename, char* to_save, int n_to_save);

@@ -7,7 +7,7 @@ add_executable(c_client_server
         server-split-manipulate-resend.c
         server.c
 
-        # client-split-manipulate-resend.c
+        #client-split-manipulate-resend.c
         client.c
 
         common.c
