@@ -148,7 +148,6 @@ char* read_until_terminator_found(const int descriptor, const char* terminator, 
                 printf("INFO: terminator '%s' found, but not included in result\n", terminator);
 
                 result_len -= terminator_len;
-                memcpy(result, result, result_len);
 
                 break;
             } else {
