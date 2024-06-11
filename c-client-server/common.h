@@ -50,3 +50,5 @@ void send_file(int descriptor, char* filename, char* terminator, int n_terminato
 void receive_and_save_file(int descriptor, char* filename, char* terminator, int n_terminator, int include_term);
 
 void save_on_file(char* filename, char* to_save, int n_to_save);
+
+int strict_str_to_int(char* source_str, int* result);

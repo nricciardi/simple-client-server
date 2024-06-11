@@ -3,7 +3,8 @@ import socket
 
 from server.singlethread_server import SingleThreadServer
 from server.multithread_server import MultithreadServer
-from server.multiproces_server import MultiprocessServer
+from server.multiprocess_fork_server import MultiprocessForkServer
+from server.multiprocess_server import MultiprocessServer
 from common.socket_utils import read_until_terminator_found, send_bytes
 from common.cli import parse_args
 import re

@@ -97,7 +97,11 @@ void start_singlethread_server(int socketd, int client_queue_len) {
 
         on_ipv4_server_start(communication_socketd, client_address);
 
-        close(communication_socketd);
+        int close_result = close(communication_socketd);
+
+        if (close_result < 0) {
+            printf("ERROR: close return %d\n", close_result);
+        }
         printf("INFO: closed communication socket with %s:%d\n", inet_ntoa(client_address.sin_addr), client_address.sin_port);
     }
 }
@@ -149,10 +153,18 @@ void start_multiprocess_server(int socketd, int client_queue_len) {
 
             on_ipv4_server_start(communication_socketd, client_address);
 
-            close(communication_socketd);
+            exit(0);
+
+        } else {        // father
+
+            int close_result = close(communication_socketd);
+
+            if (close_result < 0) {
+                printf("ERROR: close return %d\n", close_result);
+            }
+
             printf("INFO: closed communication socket with %s:%d\n", inet_ntoa(client_address.sin_addr), client_address.sin_port);
 
-            exit(0);
         }
 
     }

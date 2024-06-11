@@ -428,3 +428,21 @@ void save_on_file(char* filename, char* to_save, int n_to_save) {
     fclose(f);
 
 }
+
+int strict_str_to_int(char* source_str, int* result) {
+    int _res = 0;
+
+    int i = 0;
+    while(source_str[i] != 0) {
+
+        if(!isdigit(source_str[i])) {
+            return -1;
+        }
+
+        _res = (_res * 10) + (source_str[i] - '0');
+        i += 1;
+    }
+
+    *result = _res;
+    return 0;
+}
