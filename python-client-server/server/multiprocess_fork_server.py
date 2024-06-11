@@ -1,5 +1,7 @@
 import multiprocessing
 import socket
+import sys
+import time
 from typing import Callable
 import os
 
@@ -37,10 +39,14 @@ class MultiprocessForkServer(Server):
 
             pid = os.fork()
 
-            if pid > 0:     # father
+            if pid == 0:     # child
+
+                self.handler(communication_socket, address)
+                sys.exit(0)
+
+            else:           # father
 
                 print(f"INFO: request is handled in child process: {pid}")
 
-            else:           # child
-
-                self.handler(communication_socket, address)
+                communication_socket.close()
+                print(f"INFO: communication socket of child {pid} was closed")

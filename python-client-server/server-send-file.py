@@ -1,5 +1,5 @@
 import socket
-
+import sys
 
 from server.singlethread_server import SingleThreadServer
 from server.multithread_server import MultithreadServer
@@ -12,23 +12,30 @@ import re
 
 def server_handler(communication_socket: socket.socket, address: str):
 
-    result: bytearray = read_until_terminator_found(communication_socket, b'\n')
+    ### TO OBTAIN FILEPATH FROM CLIENT
 
-    result: str = result.decode("ascii")
+    # result: bytearray = read_until_terminator_found(communication_socket, b'\n')
+    #
+    # result: str = result.decode("ascii")
+    #
+    # matches = re.findall(r"File:(.*)", result)
+    #
+    # if len(matches) != 1:
+    #     print("ERROR: bad request")
+    #     return
+    #
+    # filepath: str = matches[0]
 
-    matches = re.findall(r"File:(.*)", result)
-
-    if len(matches) != 1:
-        print("ERROR: bad request")
-        return
-
-    filepath: str = matches[0]
+    filepath: str = "test.txt"
 
     print(f"INFO: request file: {filepath}")
 
+    send_bytes(communication_socket, f"File:{filepath}\n---\n".encode("ascii"))
     send_file(communication_socket, filepath)
 
     print(f"INFO: sent response file")
+
+    sys.exit(0)
 
 
 if __name__ == '__main__':
@@ -37,6 +44,6 @@ if __name__ == '__main__':
 
     port = args[1]
 
-    sts = MultiprocessServer('127.0.0.1', port, handler=server_handler)
+    sts = MultiprocessForkServer('127.0.0.1', port, handler=server_handler)
 
     sts.start()
