@@ -45,9 +45,9 @@ char* str_concat_array(char** str_array, int n_strings);
 
 void write_until(int sockfd, char* to_send, char* terminator, int n_terminator, int included);
 
-void send_file(int descriptor, char* filename, char* terminator, int n_terminator);
+int send_file(int descriptor, char* filename, const char* terminator, int n_terminator);
 
-void receive_and_save_file(int descriptor, char* filename, char* terminator, int n_terminator, int include_term);
+void receive_and_save_file(int descriptor, char* filename, const char* terminator, int n_terminator, int include_term);
 
 void save_on_file(char* filename, char* to_save, int n_to_save);
 

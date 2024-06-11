@@ -343,43 +343,45 @@ void write_until(int descriptor, char* to_send, char* terminator, int n_terminat
  * 
  * @param descriptor to which send the file
  * @param filename the file to send
- * @param terminator the bytes to put at the end of the send (if NUll => EOF)
- * @param n_terminator the length of the teminator (if terminator is not NULL)
+ * @param terminator the bytes to put at the end of the send (if NULL => "EOF", i.e. -1)
+ * @param n_terminator the length of the teminator (if terminator is not NULL, 0 otherwise)
+ *
+ * @return 0 ok, -1 error
 */
-void send_file(int descriptor, char* filename, char* terminator, int n_terminator) {
+int send_file(int descriptor, char* filename, const char* terminator, int n_terminator) {
 
     FILE* f;
-    char buffer[1024], eof_str;
+    char buffer[1024] = {0};
+    int buffer_len = 1024;
     int n;
 
-    // Si potrebbe togliere :P
-    bzero( (void*) buffer, 1024);
-
-    eof_str = -1;
-
-    f = fopen(filename, "r");
+    f = fopen(filename, "rb");
     if(f == NULL) {
         printf("ERROR: Opening %s\n", filename);
-        exit(1);
+        return -1;
     }
 
-    while( (n = fread(buffer, sizeof(char), 1024, f)) == 1024 )
-        write_n_bytes(descriptor, buffer, 1024);
+    while( (n = fread(buffer, sizeof(char), buffer_len, f)) == buffer_len )
+        write_n_bytes(descriptor, buffer, buffer_len);
 
-    if( (n > 0) && (n < 1024) )
+    if( (n > 0) && (n < buffer_len) )
         write_n_bytes(descriptor, buffer, n);
 
     if(n < 0) {
         printf("ERROR: While reading from %s\n", filename);
-        exit(2);
+        return -1;
     }
 
-    write_n_bytes(descriptor, 
-                    (terminator == NULL) ? &eof_str : terminator, 
-                    (terminator == NULL) ?     1    : n_terminator );
+
+
+    const char eof = 0;
+    write_n_bytes(descriptor,
+                    (terminator == NULL) ? &eof : terminator,
+                    (terminator == NULL) ? 1 : n_terminator );
 
     fclose(f);
 
+    return 0;
 }
 
 /**
@@ -391,12 +393,12 @@ void send_file(int descriptor, char* filename, char* terminator, int n_terminato
  * @param n_terminator the length of the terminator (if not NULL)
  * @param include_term to include the terminator in the data to save
 */
-void receive_and_save_file(int descriptor, char* filename, char* terminator, int n_terminator, int include_term) {
+void receive_and_save_file(int descriptor, char* filename, const char* terminator, int n_terminator, int include_term) {
     
     char* buffer, eof_string;
     int tot_size;
 
-    eof_string = -1;
+    eof_string = 0;
     
     buffer = read_until_terminator_found(descriptor, (terminator == NULL) ? &eof_string : terminator, (terminator == NULL) ? 1 : n_terminator, include_term, &tot_size);
 
