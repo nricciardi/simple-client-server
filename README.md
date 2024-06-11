@@ -6,10 +6,6 @@ Semplici client e server scritti in Python e C per sopravvivere all'esame di ret
 
 Autore: **Nicola Ricciardi**
 
-TODO:
-
-- Esempio download/upload
-
 ## C
 
 ### Client
