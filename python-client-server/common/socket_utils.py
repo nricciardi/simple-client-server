@@ -18,10 +18,10 @@ def read_until_terminator_found(socketd: socket.socket, terminator: bytes, inclu
 
         terminator_found = result[-len(terminator):] == terminator
 
-        if terminator_found and not include_terminator:
-            break
-
         if terminator_found:
+            if not include_terminator:
+                result = result[0:len(result) - len(terminator)]
+
             break
 
     return result
