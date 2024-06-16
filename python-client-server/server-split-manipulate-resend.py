@@ -1,6 +1,5 @@
 import socket
-
-
+from typing import Tuple
 from server.singlethread_server import SingleThreadServer
 from server.multithread_server import MultithreadServer
 from server.multiprocess_fork_server import MultiprocessForkServer
@@ -10,13 +9,13 @@ from common.cli import parse_args
 import re
 
 
-def server_handler(communication_socket: socket.socket, address: str):
+def server_handler(communication_socket: socket.socket, address: Tuple[str, int]):
 
-    result: bytearray = read_until_terminator_found(communication_socket, b'\n')
+    request: bytearray = read_until_terminator_found(communication_socket, b'\n')
 
-    result: str = result.decode("ascii")
+    request: str = request.decode("ascii")
 
-    matches = re.findall(r"Value:(.*)", result)
+    matches = re.findall(r"Value:(.*)", request)
 
     if len(matches) != 1:
         print("ERROR: bad request")

@@ -1,6 +1,6 @@
 import socket
 import sys
-
+from typing import Tuple
 from server.singlethread_server import SingleThreadServer
 from server.multithread_server import MultithreadServer
 from server.multiprocess_fork_server import MultiprocessForkServer
@@ -10,7 +10,7 @@ from common.cli import parse_args
 import re
 
 
-def server_handler(communication_socket: socket.socket, address: str):
+def server_handler(communication_socket: socket.socket, address: Tuple[str, int]):
 
     ### TO OBTAIN FILEPATH FROM CLIENT
 

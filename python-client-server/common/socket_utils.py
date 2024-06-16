@@ -1,7 +1,16 @@
 import socket
 
 
-def read_until_terminator_found(socketd: socket.socket, terminator: bytes, include_terminator: bool = False) -> bytearray:
+def read_until_terminator_found(socketd: socket.socket, terminator: bytes, include_terminator: bool = False, raise_on_disconnect: bool = True) -> bytearray | None:
+    '''
+    Read from socket until the terminator is found or raise exception/return None
+
+    :param socketd:
+    :param terminator:
+    :param include_terminator:
+    :param raise_on_disconnect: if False return None, else raise ConnectionAbortedError
+    :return: bytes read or None if client disconnected
+    '''
 
     result = bytearray()
 
@@ -12,7 +21,11 @@ def read_until_terminator_found(socketd: socket.socket, terminator: bytes, inclu
 
         if len(buffer) == 0:
             print("INFO: client disconnected")
-            break
+
+            if raise_on_disconnect:
+                raise ConnectionAbortedError("client disconnected in read_until_terminator_found function")
+            else:
+                return None
 
         result.extend(buffer)
 

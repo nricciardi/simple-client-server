@@ -27,11 +27,17 @@ class MultithreadServer(Server):
     def on_start(self):
 
         with ThreadPoolExecutor() as tpe:
+
+            jobs = []
+
             while self.running:
                 communication_socket, address = self.socket.accept()
 
                 print(f"INFO: accepted new connection from {address}")
 
-                result = tpe.submit(self.handler, communication_socket, address)
+                job = tpe.submit(self.handler, communication_socket, address)
 
-                result.result()
+                jobs.append(job)
+
+            for job in jobs:
+                job.result()
